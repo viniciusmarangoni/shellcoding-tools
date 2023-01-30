@@ -1,3 +1,17 @@
+## A quick word about syntax
+
+For GNU Assembler:
+
+- Comments start with `#`
+- Global symbols declaration are in the form `.globl _mysymbol`
+- To use the intel syntax for assembly instructions, add a `.intel_syntax noprefix` in the beginning of your assembly file
+
+For nasm:
+
+- Comments start with `;`
+- Global symbols declaration are in the form `global _mysymbol`
+
+
 ## x86/x64 Assembler and Disassembler
 
 This tool was inspired by https://defuse.ca/online-x86-assembler.htm
@@ -165,5 +179,76 @@ Disassembling for architecture i386:x86-64
 0000000000000000 <.data>:
    0:   b8 10 00 00 00          mov    eax,0x10
 
+
+```
+
+
+## Assembling to ELF binaries
+
+### Using nasm
+
+You can use `nasm-ld-compile-32.sh` or `nasm-ld-compile-64.sh` to assemble instructions into an executable ELF binary.
+
+Just run `./nasm-ld-compile-XX.sh my_source_file.s`
+
+Make sure the name of your "main function" is named **_start**. 
+
+#### 32bit skeleton
+
+```
+global _start
+
+_start:
+    mov eax, 1       ; exit syscall
+    mov ebx, 0       ; return code
+    int 0x80         ; invoke system call
+
+```
+
+#### 64bit skeleton
+
+```
+global _start
+
+_start:
+    mov rax, 60      ; exit syscall
+    mov rdi, 0       ; return code
+    syscall          ; invoke system call
+
+```
+
+### Using GNU Assembler
+
+You can use `gcc-compile-32.sh` or `gcc-compile-64.sh` to assemble instructions into an executable ELF binary.
+
+Just run `./gcc-compile-XX.sh my_source_file.s`
+
+Make sure the name of your "main function" is named **_start**. 
+
+#### 32bit skeleton
+
+```
+.intel_syntax noprefix
+
+.globl _start
+
+_start:
+    mov eax, 1       # exit syscall
+    mov ebx, 0       # return code
+    int 0x80         # invoke system call
+
+```
+
+#### 64bit skeleton
+
+```
+.intel_syntax noprefix
+
+.globl _start
+
+_start:
+    mov rax, 60      # exit syscall
+    mov rdi, 0       # return code
+    syscall          # invoke system call
 
 ```
