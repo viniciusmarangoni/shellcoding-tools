@@ -126,6 +126,12 @@ def main():
     print('---------- [ Python Bytearray ]----------\n{0}\n'.format(python_shellcode))
     print('---------- [ C String ]----------\n{0}\n'.format(string_literal))
 
+    payload_size = (len(string_literal) - 21) // 4
+    print('\n\nPayload size: {0} {1}'.format(payload_size, "bytes" if payload_size != 1 else "byte"))
+
+    if '\\x00' in string_literal:
+        print('!!! CAUTION - NULL BYTE FOUND !!!')
+
 
 if __name__ == '__main__':
     ret = main()
