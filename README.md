@@ -189,7 +189,7 @@ Disassembling for architecture i386:x86-64
 
 You can use `nasm-ld-compile-32.sh` or `nasm-ld-compile-64.sh` to assemble instructions into an executable ELF binary.
 
-Just run `./nasm-ld-compile-XX.sh my_source_file.s`
+**Just run** `./nasm-ld-compile-XX.sh my_source_file.s`
 
 Make sure the name of your "main function" is named **_start**. 
 
@@ -221,7 +221,7 @@ _start:
 
 You can use `gcc-compile-32.sh` or `gcc-compile-64.sh` to assemble instructions into an executable ELF binary.
 
-Just run `./gcc-compile-XX.sh my_source_file.s`
+**Just run** `./gcc-compile-XX.sh my_source_file.s`
 
 Make sure the name of your "main function" is named **_start**. 
 
