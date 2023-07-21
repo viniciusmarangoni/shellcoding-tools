@@ -395,7 +395,7 @@ def main():
         encoder = item.get('encoder')
         encoded_shellcode = item.get('shellcode')
 
-        print('\n[+] {0}-encoded shellcode:\n{1}\n\n'.format(encoder, bytes_to_hex_escaped(encoded_shellcode)))
+        print('\n[+] {0}-encoded shellcode ({1} bytes):\n{2}\n\n'.format(encoder, len(encoded_shellcode), bytes_to_hex_escaped(encoded_shellcode)))
 
 
     return 0
