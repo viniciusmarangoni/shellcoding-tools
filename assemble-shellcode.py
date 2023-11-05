@@ -36,7 +36,13 @@ def main():
         f.close()
 
     cleanup()
-    contents = b'.intel_syntax noprefix\n_main:\n' + contents + b'\n'
+
+    if b'.intel_syntax' not in contents:
+        contents = b'.intel_syntax noprefix\n_main:\n' + contents + b'\n'
+
+    if b'_start:' in contents:
+        contents = contents.replace(b'_start:', b'_main:')
+
     f = open(ASSEMBLY_TMP_FILE, 'wb')
     f.write(contents)
     f.close()
