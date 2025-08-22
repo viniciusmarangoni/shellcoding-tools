@@ -38,17 +38,6 @@ def print_usage():
     print('\n')
 
 
-def test():
-    full_pattern = pattern_create()
-
-    for i in range(len(full_pattern)):
-        pattern = full_pattern[i:i+4]
-        print('At {0} ({1}) found {2} times'.format(i, pattern, full_pattern.count(pattern)))
-
-        if full_pattern.count(pattern) > 1:
-            break
-
-
 def main():
     if len(sys.argv) < 2:
         print_usage()
@@ -95,7 +84,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # test()
     ret = main()
     sys.exit(ret)
-
