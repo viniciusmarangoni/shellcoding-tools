@@ -58,6 +58,7 @@ def main():
 
         if pattern_lenth > MAX_PATTERN_LENGTH:
             print('Maximum pattern length is {0}'.format(MAX_PATTERN_LENGTH))
+            print('Consider using [padding-length] param')
             return 1
 
         full_pattern = pattern_create()
