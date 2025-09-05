@@ -333,6 +333,8 @@ def main():
         print('{0}\n'.format(' '.join(textwrap.wrap(original_shellcode, 2))))
 
         original_shellcode = bytes.fromhex(original_shellcode)
+        print('\nShellcode size: {0} bytes'.format(len(contents)))
+        
     except Exception as e:
         print('[!] Something went wrong while decoding your shellcode.')
         print(e)
