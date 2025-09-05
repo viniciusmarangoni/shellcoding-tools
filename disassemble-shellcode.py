@@ -11,101 +11,57 @@ def cleanup():
         os.remove(OBJ_TMP_FILE)
 
 
+def normalize_line(line):
+    line = line.strip().rstrip(';')
+    i = line.find('=')
+    if i != -1:
+        line = line[i+1:].strip()
+
+    line = line.replace('bytearray', ' ').strip()
+    line = line.replace('(', ' ').replace(')', ' ').strip()
+
+    if line.startswith('b"'):
+        line = line[2:].strip()
+
+    if line.startswith("b'"):
+        line = line[2:].strip()
+
+    line = line.strip('"').strip("'")
+    line = line.replace('0x', ' ').strip().replace(',', ' ').strip()
+    line = line.replace('\\x', ' ').strip()
+    return line
+
 def normalize_input(contents):
-    if '=' in contents:
-        i = contents.find('=')
-        contents = contents[i+1:]
+    new_contents = ''
+    contents = contents.replace('\r', ' ')
+    for line in contents.split('\n'):
+        new_contents += ' ' + normalize_line(line)
 
-    contents = contents.replace('\n', ' ').replace('\r', ' ')
-    if 'bytearray' in contents:
-        contents = contents.replace('bytearray', ' ')
+    new_contents = new_contents.strip()
+    if not new_contents:
+        return None
 
-    contents = contents.strip()
-
-    if 'b"' in contents:
-        contents = contents.replace('b"', ' ')
-
-    if "b'" in contents:
-        contents = contents.replace("b'", ' ')
-
-    if "'" in contents:
-        contents = contents.replace("'", "")
-
-    if '"' in contents:
-        contents = contents.replace('"', '')
-    
-    if ',' in contents:
-        contents = contents.replace(',', ' ')
-
-    if '0x' in contents:
-        contents = contents.replace('0x', ' ')
-
-    if '{' in contents:
-        contents = contents.replace('{', ' ')
-
-    if '}' in contents:
-        contents = contents.replace('}', ' ')
-
-    if '(' in contents:
-        contents = contents.replace('(', ' ')
-
-    if ')' in contents:
-        contents = contents.replace(')', ' ')
-
-    if '\\x' in contents:
-        contents = contents.replace('\\x', ' ')
-
-    contents = contents.strip()
-    if ' ' not in contents:
+    if ' ' not in new_contents:
         # probably received a string in the hex form aabbccddeeff
         if len(contents) % 2 != 0:
             print('Odd number of chars. Are you sure you pasted the right shellcode?')
             return None
 
     else:
-        splitted = contents.split()
-        new_contents = []
-
+        splitted = new_contents.split()
+        new_contents = ''
         for item in splitted:
-            if len(item) != 2:
-                print('')
-                should_replace = False
+            if len(item) == 1:
+                item = '0{0}'.format(item)
 
-                if len(item) % 2 != 0:
-                    new_item = '0{0}'.format(item)
-                else:
-                    new_item = item
+            elif len(item) > 2:
+                print('Could not identify your shellcode properly')
+                return None
 
-                eval_value = int('0x{0}'.format(new_item), 16)
-                if eval_value <= 0xff:
-                    new_value = eval_value.to_bytes(1, 'little').hex()
-                    should_replace = True
+            new_contents += ' ' + item
 
-                elif eval_value > 0xff and eval_value <= 0xffff:
-                    new_value = eval_value.to_bytes(2, 'little').hex()
-                    should_replace = True
-
-                elif eval_value > 0xffff and eval_value <= 0xffffffff:
-                    new_value = eval_value.to_bytes(4, 'little').hex()
-                    should_replace = True
-
-                elif eval_value > 0xffffffffff and eval_value <= 0xffffffffffffffff:
-                    new_value = eval_value.to_bytes(8, 'little').hex()
-                    should_replace = True
-
-                else:
-                    print('[Warning] Processing a strange hex value: "{0}". I dont know what it is. Expect errors.'.format(item))
-                    should_replace = False
-                    
-                if should_replace:
-                    print('[Warning] Processing a strange hex value: "{0}". I will assume it was 0x{1} and will pack to little endian ({2}) for you.'.format(item, item, new_value))
-                    item = new_value
-
-            new_contents.append(item)
-
-        contents = ''.join(new_contents).strip()
-
-    return contents
+        new_contents = new_contents.strip()
+        return new_contents
 
 
 def main():
@@ -121,9 +77,10 @@ def main():
 
     try:
         print('\n\nProcessing the following shellcode:')
-        print(' '.join(textwrap.wrap(contents, 2)))
+        print(contents)
 
         contents = bytes.fromhex(contents)
+        print('\nShellcode size: {0} bytes'.format(len(contents)))
     except Exception as e:
         print('Something went wrong while decoding your shellcode.')
         print(e)
