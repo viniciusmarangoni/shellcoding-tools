@@ -43,9 +43,11 @@ def normalize_input(contents):
 
     if ' ' not in new_contents:
         # probably received a string in the hex form aabbccddeeff
-        if len(contents) % 2 != 0:
+        if len(new_contents) % 2 != 0:
             print('Odd number of chars. Are you sure you pasted the right shellcode?')
             return None
+
+        return new_contents
 
     else:
         splitted = new_contents.split()
